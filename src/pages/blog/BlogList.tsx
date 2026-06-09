@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PostCard, { Post } from "../../components/PostCard";
 import api from "../../utils/api";
 import { BookOpen, Feather, Sparkles, WifiOff, FileText, Loader2 } from "lucide-react";
 
 export default function BlogList() {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/admin/login?error=login_required");
+      return;
+    }
+
     async function fetchPosts() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get("/api/posts");
+        const data = await api.get("/blog/all");
         setPosts(data);
       } catch (err: any) {
         setError(err.message || "Could not retrieve stories. Please verify server connection.");
@@ -23,7 +30,7 @@ export default function BlogList() {
       }
     }
     fetchPosts();
-  }, []);
+  }, [navigate]);
 
   return (
     <div id="blog-list-page" className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-300 pb-16 transition-colors">

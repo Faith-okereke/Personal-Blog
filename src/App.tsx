@@ -19,12 +19,11 @@ export default function App() {
           <Routes>
             {/* Public blog views */}
             <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
 
             {/* Admin controller dashboard views */}
             <Route path="/admin/posts" element={<PostsDashboard />} />
             <Route path="/admin/posts/new" element={<PostEditor />} />
-            <Route path="/admin/posts/:id/edit" element={<PostEditor />} />
             <Route path="/admin/login" element={<AdminLogin />} />
 
             {/* Fail-safe redirection: Default visitors go to /blog */}

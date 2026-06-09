@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { KeyRound, ShieldAlert, AlertCircle, Loader2, ArrowRight } from "lucide-react";
+import { api } from "../../utils/api";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("password123");
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -17,7 +19,7 @@ export default function AdminLogin() {
     if (code === "session_expired") {
       setInfo("Your administrator authentication token is expired. Please re-authenticate.");
     } else if (code === "login_required") {
-      setInfo("Please pass authentication checks to log under admin CMS terminal dashboards.");
+      setInfo("Please pass authentication checks to access the blog and dashboards.");
     }
 
     // If token already exists, redirect directly
@@ -26,7 +28,7 @@ export default function AdminLogin() {
     }
   }, [searchParams, navigate]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
       setError("Username and Password credentials are mandatory properties.");
@@ -38,23 +40,23 @@ export default function AdminLogin() {
       setError(null);
       setInfo(null);
 
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login validation failed.");
-      }
+      const endpoint = isRegisterMode ? "/auth/register" : "/auth/login";
+      const data = await api.post(endpoint, { username, password });
 
       // Valid token received, save under key "token"
-      localStorage.setItem("token", data.token);
-      navigate("/admin/posts");
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        navigate("/admin/posts");
+      } else {
+        if (isRegisterMode) {
+          setInfo("Registration successful! Please log in below.");
+          setIsRegisterMode(false);
+        } else {
+          throw new Error("No token returned from server.");
+        }
+      }
     } catch (err: any) {
-      setError(err.message || "Failed to authenticate. Contact server administrator.");
+      setError(err.message || `Failed to ${isRegisterMode ? "register" : "authenticate"}. Contact server administrator.`);
     } finally {
       setLoading(false);
     }
@@ -105,8 +107,35 @@ export default function AdminLogin() {
         )}
 
         {/* Credentials Form */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-md dark:shadow-2xl">
-          <form onSubmit={handleLogin} className="space-y-4">
+        <div className="bg-white dark:bg-zinc-905 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-md dark:shadow-2xl">
+          
+          {/* Custom mode switch tab */}
+          <div className="flex bg-zinc-50 dark:bg-zinc-950 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
+            <button
+              type="button"
+              onClick={() => setIsRegisterMode(false)}
+              className={`flex-1 py-2 rounded-lg text-center font-bold transition-all cursor-pointer ${
+                !isRegisterMode
+                  ? "bg-white dark:bg-zinc-805 text-primary shadow-sm border border-zinc-200/60 dark:border-zinc-700"
+                  : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsRegisterMode(true)}
+              className={`flex-1 py-2 rounded-lg text-center font-bold transition-all cursor-pointer ${
+                isRegisterMode
+                  ? "bg-white dark:bg-zinc-805 text-primary shadow-sm border border-zinc-200/60 dark:border-zinc-700"
+                  : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
+              }`}
+            >
+              Register
+            </button>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
             
             {/* Username */}
             <div className="space-y-1">
@@ -145,7 +174,7 @@ export default function AdminLogin() {
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin text-white" />
               ) : (
-                <span>Validate Account &rarr;</span>
+                <span>{isRegisterMode ? "Create Account &rarr;" : "Validate Account &rarr;"}</span>
               )}
             </button>
           </form>

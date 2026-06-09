@@ -9,9 +9,7 @@ import {
 } from "lucide-react";
 
 export default function PostEditor() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const isEditMode = !!id;
 
   // Form states
   const [title, setTitle] = useState("");
@@ -23,7 +21,6 @@ export default function PostEditor() {
 
   // App UI state indicators
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Authenticate user & load existing post data on EDIT mode
@@ -33,35 +30,7 @@ export default function PostEditor() {
       navigate("/admin/login?error=login_required");
       return;
     }
-
-    if (isEditMode) {
-      async function loadPostToEdit() {
-        try {
-          setFetching(true);
-          setError(null);
-          // Retrieve complete admin portfolio listing
-          const allPosts = await api.get("/api/admin/posts");
-          const editPost = allPosts.find((p: any) => p.id === id);
-          
-          if (!editPost) {
-            throw new Error("Specified article log could not be located on CMS server.");
-          }
-
-          setTitle(editPost.title);
-          setSlug(editPost.slug);
-          setIsSlugManuallyEdited(true); // Treat existing slug as locked
-          setCoverImage(editPost.coverImage || "");
-          setBody(editPost.body || "");
-          setStatus(editPost.status || "Draft");
-        } catch (err: any) {
-          setError(err.message || "Could not retrieve the post information to edit.");
-        } finally {
-          setFetching(false);
-        }
-      }
-      loadPostToEdit();
-    }
-  }, [id, isEditMode, navigate]);
+  }, [navigate]);
 
   // Handle auto-slug updates when title is typed
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,29 +74,16 @@ export default function PostEditor() {
       setLoading(true);
       setError(null);
 
-      if (isEditMode) {
-        await api.put(`/api/posts/${id}`, payload);
-      } else {
-        await api.post("/api/posts", payload);
-      }
+      await api.post("/blog/create", payload);
 
       // Success, route back to dashboards
       navigate("/admin/posts");
     } catch (err: any) {
-      setError(err.message || "Transmission error. Check slug duplicate constraints.");
+      setError(err.message || "Transmission error. Check server constraints.");
     } finally {
       setLoading(false);
     }
   };
-
-  if (fetching) {
-    return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-300 flex flex-col items-center justify-center p-8 transition-colors">
-        <Loader2 className="w-10 h-10 text-primary animate-spin mb-3" />
-        <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400">Retrieving article schema from server...</p>
-      </div>
-    );
-  }
 
   return (
     <div id="post-editor-page" className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-300 pb-20 transition-colors">
@@ -144,7 +100,7 @@ export default function PostEditor() {
           </Link>
 
           <span className="text-xs font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 py-1 rounded-md">
-            mode: <span className="text-primary font-bold">{isEditMode ? "EDIT_POST_RECORD" : "CREATE_NEW_POST"}</span>
+            mode: <span className="text-primary font-bold">"CREATE_NEW_POST"</span>
           </span>
         </div>
       </header>

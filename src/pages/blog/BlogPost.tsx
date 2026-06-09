@@ -5,19 +5,25 @@ import { Post } from "../../components/PostCard";
 import { ArrowLeft, Calendar, Clock, FolderKanban, Code2 } from "lucide-react";
 
 export default function BlogPost() {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/admin/login?error=login_required");
+      return;
+    }
+
     async function fetchPost() {
-      if (!slug) return;
+      if (!id) return;
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get(`/api/posts/${slug}`);
+        const data = await api.get(`/blog/${id}`);
         setPost(data);
       } catch (err: any) {
         setError(err.message || "Failed to retrieve this article.");
@@ -26,7 +32,7 @@ export default function BlogPost() {
       }
     }
     fetchPost();
-  }, [slug]);
+  }, [id, navigate]);
 
   if (loading) {
     return (

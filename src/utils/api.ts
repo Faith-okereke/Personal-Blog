@@ -4,6 +4,8 @@
  * Triggers redirect to /admin/login upon receiving a 401 response status.
  */
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "";
+
 async function apiRequest(method: string, endpoint: string, body?: any) {
   const token = localStorage.getItem("token");
   
@@ -24,8 +26,16 @@ async function apiRequest(method: string, endpoint: string, body?: any) {
     options.body = JSON.stringify(body);
   }
 
+  // Build target URL by prepending VITE_API_BASE_URL if set and target itself is relative
+  let targetUrl = endpoint;
+  if (API_BASE_URL && !endpoint.startsWith("http://") && !endpoint.startsWith("https://")) {
+    const base = API_BASE_URL.replace(/\/+$/, "");
+    const relativePart = endpoint.replace(/^\/+/, "");
+    targetUrl = `${base}/${relativePart}`;
+  }
+
   try {
-    const response = await fetch(endpoint, options);
+    const response = await fetch(targetUrl, options);
 
     if (response.status === 401) {
       localStorage.removeItem("token");

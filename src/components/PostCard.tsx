@@ -62,7 +62,7 @@ export default function PostCard({ post }: { post: Post; key?: any }) {
 
           {/* Heading */}
           <h3 className="font-sans text-lg font-bold leading-snug text-zinc-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">
-            <Link to={`/blog/${post.slug}`} className="hover:underline focus:outline-none cursor-pointer">
+            <Link to={`/blog/${post.id}`} className="hover:underline focus:outline-none cursor-pointer">
               {post.title}
             </Link>
           </h3>
@@ -76,7 +76,7 @@ export default function PostCard({ post }: { post: Post; key?: any }) {
         {/* Read more button link */}
         <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center">
           <Link
-            to={`/blog/${post.slug}`}
+            to={`/blog/${post.id}`}
             className="inline-flex items-center text-xs font-mono font-bold text-primary hover:text-primary-hover space-x-1 cursor-pointer"
           >
             <span>Read More</span>

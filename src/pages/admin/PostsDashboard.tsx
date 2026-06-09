@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import { 
-  Plus, Edit, Trash2, Globe, EyeOff, LayoutDashboard, Calendar, 
-  Clock, PlusCircle, Loader2, AlertCircle, LogIn
+  Plus, Trash2, Eye, LayoutDashboard, Calendar, 
+  Clock, PlusCircle, Loader2, AlertCircle
 } from "lucide-react";
 
 interface Post {
@@ -36,7 +36,7 @@ export default function PostsDashboard() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get("/api/admin/posts");
+        const data = await api.get("/blog/all");
         setPosts(data);
       } catch (err: any) {
         setError(err.message || "Failed to load dashboard posts. Please retry.");
@@ -48,25 +48,13 @@ export default function PostsDashboard() {
     fetchAllPosts();
   }, [navigate]);
 
-  // Handler for toggle publish status
-  const handleTogglePublish = async (post: Post) => {
-    try {
-      const updatedPost = await api.patch(`/api/posts/${post.id}/publish`);
-      setPosts((prev) => 
-        prev.map((p) => (p.id === post.id ? updatedPost : p))
-      );
-    } catch (err: any) {
-      alert(err.message || "Failed to alter publishing status.");
-    }
-  };
-
   // Handler for post deletion
   const handleDeletePost = async (id: string, title: string) => {
     const confirmed = window.confirm(`Are you sure you want to delete this post?\n\n"${title}"\n\nThis action is irreversible.`);
     if (!confirmed) return;
 
     try {
-      await api.delete(`/api/posts/${id}`);
+      await api.delete(`/blog/${id}`);
       setPosts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {
       alert(err.message || "Could not delete this story.");
@@ -230,26 +218,13 @@ export default function PostsDashboard() {
 
                     {/* Actions column */}
                     <div className="flex items-center justify-end space-x-2.5 sm:space-x-3 pt-3 sm:pt-0 border-t border-zinc-150 dark:border-zinc-800 sm:border-t-0 mt-3 sm:mt-0">
-                      {/* Toggle publish button */}
-                      <button
-                        onClick={() => handleTogglePublish(post)}
-                        className="p-1.5 text-zinc-500 dark:text-zinc-400 hover:text-primary dark:hover:text-primary-light hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700 rounded transition-all cursor-pointer"
-                        title={post.status === "Published" ? "Unpublish (" + post.title + ")" : "Publish (" + post.title + ")"}
-                      >
-                        {post.status === "Published" ? (
-                          <EyeOff className="w-4 h-4 text-primary" />
-                        ) : (
-                          <Globe className="w-4 h-4" />
-                        )}
-                      </button>
-
-                      {/* Edit post button */}
+                      {/* View post button */}
                       <Link
-                        to={`/admin/posts/${post.id}/edit`}
+                        to={`/blog/${post.id}`}
                         className="p-1.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700 rounded transition-all cursor-pointer"
-                        title="Edit article"
+                        title="View active article"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Eye className="w-4 h-4" />
                       </Link>
 
                       {/* Delete post button */}
