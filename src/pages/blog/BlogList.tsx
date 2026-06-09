@@ -21,7 +21,8 @@ export default function BlogList() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get("/blog/all");
+        const response = await api.get("/blog/all");
+        const data = Array.isArray(response) ? response : (response?.data || []);
         setPosts(data);
       } catch (err: any) {
         setError(err.message || "Could not retrieve stories. Please verify server connection.");

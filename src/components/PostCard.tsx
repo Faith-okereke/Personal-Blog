@@ -5,12 +5,19 @@ import { ArrowRight, Calendar, Clock, Code2 } from "lucide-react";
 export interface Post {
   id: string;
   title: string;
-  slug: string;
-  body: string;
+  slug?: string;
+  body?: string;
+  content?: string;
   coverImage?: string;
-  status: string;
-  datePublished: string;
-  readTime: string;
+  status?: string;
+  datePublished?: string;
+  dateCreated?: string;
+  readTime?: string;
+  author?: {
+    id: string;
+    email: string;
+    fullName: string;
+  };
 }
 
 export default function PostCard({ post }: { post: Post; key?: any }) {
@@ -50,9 +57,15 @@ export default function PostCard({ post }: { post: Post; key?: any }) {
         <div className="space-y-3.5">
           {/* Metadata Row */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-zinc-500 font-mono">
+            {post.author && (
+              <span className="flex items-center space-x-1 font-semibold text-zinc-605 text-primary">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                <span>{post.author.fullName || post.author.email}</span>
+              </span>
+            )}
             <span className="flex items-center space-x-1">
               <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
-              <span>{post.datePublished || "Draft"}</span>
+              <span>{post.dateCreated ? new Date(post.dateCreated).toLocaleDateString() : (post.datePublished || "Draft")}</span>
             </span>
             <span className="flex items-center space-x-1">
               <Clock className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
@@ -69,7 +82,7 @@ export default function PostCard({ post }: { post: Post; key?: any }) {
 
           {/* Excerpt */}
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 font-normal">
-            {cleanExcerpt(post.body) || "No content summary available."}
+            {cleanExcerpt(post.content || post.body || "") || "No content summary available."}
           </p>
         </div>
 

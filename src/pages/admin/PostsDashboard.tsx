@@ -36,7 +36,8 @@ export default function PostsDashboard() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get("/blog/all");
+        const response = await api.get("/blog/all");
+        const data = Array.isArray(response) ? response : (response?.data || []);
         setPosts(data);
       } catch (err: any) {
         setError(err.message || "Failed to load dashboard posts. Please retry.");
@@ -184,10 +185,10 @@ export default function PostsDashboard() {
                           {post.status}
                         </span>
                         <span>&bull;</span>
-                        <span>{new Date(post.dateCreated).toLocaleDateString()}</span>
+                        <span>{new Date(post.dateCreated || post.datePublished || Date.now()).toLocaleDateString()}</span>
                       </div>
                       <div className="hidden sm:block text-xs text-zinc-400 dark:text-zinc-500 font-mono font-semibold tracking-tight">
-                        slug: <span className="text-zinc-600 dark:text-zinc-400">/{post.slug}</span>
+                        slug: <span className="text-zinc-600 dark:text-zinc-400">/{post.slug || post.id}</span>
                       </div>
                     </div>
 
@@ -208,7 +209,7 @@ export default function PostsDashboard() {
                     <div className="hidden sm:block font-mono text-xs text-zinc-500 dark:text-zinc-400">
                       <div className="flex items-center space-x-1.5">
                         <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
-                        <span>{new Date(post.dateCreated).toLocaleDateString("en-US", {
+                        <span>{new Date(post.dateCreated || post.datePublished || Date.now()).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
                           day: "numeric"

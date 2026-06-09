@@ -23,7 +23,8 @@ export default function BlogPost() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get(`/blog/${id}`);
+        const response = await api.get(`/blog/${id}`);
+        const data = response?.data ? response.data : response;
         setPost(data);
       } catch (err: any) {
         setError(err.message || "Failed to retrieve this article.");
@@ -84,9 +85,15 @@ export default function BlogPost() {
         {/* Article Header Meta */}
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+            {post.author && (
+              <span className="flex items-center space-x-1 font-semibold text-primary">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                <span>{post.author.fullName || post.author.email}</span>
+              </span>
+            )}
             <span className="flex items-center space-x-1.5">
               <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
-              <span>{post.datePublished || "Unpublished Draft"}</span>
+              <span>{post.dateCreated ? new Date(post.dateCreated).toLocaleDateString() : (post.datePublished || "Unpublished Draft")}</span>
             </span>
             <span className="flex items-center space-x-1.5">
               <Clock className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
@@ -135,7 +142,7 @@ export default function BlogPost() {
               prose-li:text-zinc-700 dark:prose-li:text-zinc-300
               prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-zinc-100 dark:prose-blockquote:bg-zinc-900/40 prose-blockquote:pl-5 prose-blockquote:py-1 prose-blockquote:italic prose-blockquote:text-zinc-600 dark:prose-blockquote:text-zinc-400 prose-blockquote:rounded-r-lg prose-blockquote:mb-6
               prose-code:font-mono prose-code:text-xs prose-code:bg-zinc-100 dark:prose-code:bg-zinc-900 prose-code:text-primary dark:prose-code:text-primary-light prose-code:p-1 prose-code:rounded"
-            dangerouslySetInnerHTML={{ __html: post.body }}
+            dangerouslySetInnerHTML={{ __html: post.content || post.body || "" }}
           />
         </div>
  

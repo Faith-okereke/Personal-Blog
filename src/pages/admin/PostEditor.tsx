@@ -66,7 +66,8 @@ export default function PostEditor() {
       title: title.trim(),
       slug: slug.trim() || generateSlug(title),
       coverImage: coverImage.trim(),
-      body: body,
+      body: body,      // Keep legacy for safety
+      content: body,   // Map to content for backend compatibility
       status: currentStatus,
     };
 
