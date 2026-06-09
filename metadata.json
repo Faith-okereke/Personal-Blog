@@ -1,0 +1,6 @@
+{
+  "name": "NneBlog",
+  "description": "A developer portfolio blog CMS with visitor readability and an administrator dashboard to create, edit, publish, and manage blog posts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

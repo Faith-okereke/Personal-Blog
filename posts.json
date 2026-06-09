@@ -1,0 +1,35 @@
+[
+  {
+    "id": "seed-1",
+    "title": "Mastering Tailwind CSS v4 in Developer Portfolios",
+    "slug": "mastering-tailwind-css-v4-in-developer-portfolios",
+    "body": "<h2>The Era of Zero-Config Utility Styles</h2><p>Tailwind CSS v4 introduces a revolutionary native lightningcss integration, which performs build-time optimizations and removes the need for highly complex PostCSS configuration pipelines. In this post, we explore how to configure fluid responsive grids, optimize font sizing, and use custom themes directly in container contexts.</p><h3>Fluid responsive sizing</h3><p>By declaring custom screen-based variables or utilizing standard container widths such as <code>max-w-7xl</code>, content scales elegantly across mobile layouts and dense multi-column desktop environments. It eliminates clutter and ensures professional visual rhythm throughout the developer portal.</p>",
+    "coverImage": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
+    "status": "Published",
+    "datePublished": "June 3, 2026",
+    "dateCreated": "2026-06-03T10:00:00Z",
+    "readTime": "3 min read"
+  },
+  {
+    "id": "seed-2",
+    "title": "Why React 19 is a Game-Changer for Custom CMS Platforms",
+    "slug": "why-react-19-is-a-game-changer-for-custom-cms-platforms",
+    "body": "<h2>Unlocking Native Form State & Actions</h2><p>React 19 radically simplifies form management through the introduction of native Action handlers. Developers no longer need to manage manual loading status states, response errors, or complex callback trees. It's clean, type-safe, and incredibly fast.</p><h3>The Benefits for Content Management Roles:</h3><ul><li>No custom hooks required for transaction indicators.</li><li>Streamlined state transition tracking.</li><li>Direct HTML element integration with high performance.</li></ul><p>By utilizing modern tools and clean layouts, we can build custom administrative tools that feel identical to native desktops.</p>",
+    "coverImage": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80",
+    "status": "Published",
+    "datePublished": "June 5, 2026",
+    "dateCreated": "2026-06-05T12:00:00Z",
+    "readTime": "4 min read"
+  },
+  {
+    "id": "seed-3",
+    "title": "Building Dynamic Micro-Animations with Motion API",
+    "slug": "building-dynamic-micro-animations-with-motion-api",
+    "body": "<h2>Micro-Engagements that Guide the Eye</h2><p>Animations should never be gratuitous; they must always serve a clear visual purpose. In this ongoing draft, we summarize standard patterns for listing entries, fade-in transitions for articles, and fluid button feedback states.</p><p>We are currently integrating this with standard React and Tailwind classes to build an elegant micro-animated dashboard experience.</p>",
+    "coverImage": "",
+    "status": "Draft",
+    "datePublished": "",
+    "dateCreated": "2026-06-07T14:30:00Z",
+    "readTime": "2 min read"
+  }
+]
